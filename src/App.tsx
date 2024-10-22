@@ -69,7 +69,7 @@ function App() {
 
   const handleDrag = (
     key: keyof typeof positions,
-    e: DraggableEvent,
+    _e: DraggableEvent,
     data: DraggableData,
   ) => {
     setPositions((prevPositions) => ({
