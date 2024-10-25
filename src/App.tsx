@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -40,6 +40,36 @@ function App() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+
+  // Generate a unique ID (max 4 characters)
+  const generateUniqueId = () => {
+    return Math.random().toString(36).substr(2, 4).toUpperCase();
+  };
+
+  const truncateUsername = (username: string) => {
+    // Return only the first 6 characters of the username
+    return username.slice(0, 6);
+  };
+
+  // Generate the certificate ID based on the format
+  const generateCertificateId = () => {
+    // format = prefix-username-unique_id
+    const prefix = '8020';
+    const username = 'TRIPLE-ADE';
+    const truncatedUsername = truncateUsername(username);
+
+    const uniqueId = generateUniqueId();
+    return `${prefix}-${truncatedUsername}-${uniqueId}`;
+  };
+
+  // Update certificate ID when the component mounts
+  useEffect(() => {
+    const certificateId = generateCertificateId();
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      certificateId,
+    }));
+  }, []);
 
   const handleDownload = () => {
     const certificateElement = document.querySelector(
@@ -132,9 +162,8 @@ function App() {
                 name="certificateId"
                 value={formData.certificateId}
                 onChange={handleChange}
-                required
-                maxLength={10}
-                minLength={10}
+                maxLength={16}
+                disabled
               />
             </label>
 
