@@ -32,7 +32,7 @@ function App() {
   });
 
   const [submitted, setSubmitted] = useState(false);
-  const verificationURL = `https://yourwebsite.com/verify/${formData.certificateId}`;
+  const verificationURL = `https://tublian-cert.netlify.app/verify/${formData.certificateId}`;
 
   // Update certificate ID when the component mounts
   useEffect(() => {
