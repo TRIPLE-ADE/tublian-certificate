@@ -136,6 +136,13 @@ textarea {
   font-weight: 700;
 }
 
+.certificate-qrCode {
+  position: absolute;
+  left: 2rem;
+  width: 100px;
+  bottom: -30px;
+}
+
 button {
   background-color: var(--primary-color);
   color: var(--text-color);

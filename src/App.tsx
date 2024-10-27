@@ -3,25 +3,17 @@ import './App.css';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
+import QRCode from 'react-qr-code';
 
 import certificateTemplate from './assets/template/template-1.png';
 import certificateTemplate2 from './assets/template/template-2.png';
-
-interface FormData {
-  name: string;
-  description: string;
-  certificateId: string;
-  date: string;
-}
-
-interface Position {
-  x: number;
-  y: number;
-}
+import { FormData, Position } from './types/cert';
+import { generateCertificateId } from './utils/helper';
 
 function App() {
   const [selectedTemplate, setSelectedTemplate] = useState(certificateTemplate);
   const [font, setFont] = useState('Poppins');
+  const [username] = useState<string>('TRIPLE-ADE');
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -40,31 +32,13 @@ function App() {
   });
 
   const [submitted, setSubmitted] = useState(false);
-
-  // Generate a unique ID (max 4 characters)
-  const generateUniqueId = () => {
-    return Math.random().toString(36).substr(2, 4).toUpperCase();
-  };
-
-  const truncateUsername = (username: string) => {
-    // Return only the first 6 characters of the username
-    return username.slice(0, 6);
-  };
-
-  // Generate the certificate ID based on the format
-  const generateCertificateId = () => {
-    // format = prefix-username-unique_id
-    const prefix = '8020';
-    const username = 'TRIPLE-ADE';
-    const truncatedUsername = truncateUsername(username);
-
-    const uniqueId = generateUniqueId();
-    return `${prefix}-${truncatedUsername}-${uniqueId}`;
-  };
+  const verificationURL = `https://yourwebsite.com/verify/${formData.certificateId}`;
 
   // Update certificate ID when the component mounts
   useEffect(() => {
-    const certificateId = generateCertificateId();
+    const certificateId = generateCertificateId({
+      username: username as string,
+    });
     setFormData((prevFormData) => ({
       ...prevFormData,
       certificateId,
@@ -218,6 +192,7 @@ function App() {
               >
                 <p className="certificate-date">{formData.date}</p>
               </Draggable>
+              <QRCode value={verificationURL} className="certificate-qrCode" />
             </div>
           </div>
           <button onClick={handleDownload}>Download Certificate as PDF</button>
